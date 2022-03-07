@@ -1,5 +1,6 @@
 const Post = require("../model/Post");
 const User = require("../../users/model/User");
+const Comment = require("../../comments/model/Comment");
 const { errorHandler } = require("../../utils/index");
 
 const createPost = async (req, res) => {
@@ -35,7 +36,11 @@ const getAllPosts = async (req, res) => {
 		const foundAllPosts = await Post.find({})
 			.populate("owner", "username")
 			.populate("commentHistory", "comment");
+
 		res.status(200).json(foundAllPosts);
+		// render index.ejs page. pass in the foundAllPosts information as posts
+		// IN index.ejs page console.log(posts)
+		// forEach of the posts and display each post's title and post
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: error, error: error });
@@ -65,6 +70,7 @@ const updatePost = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
+	//6223b9e3f6bdeb39256340f5
 	try {
 		const { id } = req.params;
 
@@ -74,11 +80,22 @@ const deletePost = async (req, res) => {
 
 		if (foundUser._id.toString() === foundPost.owner.toString()) {
 			const deletedPost = await Post.findByIdAndDelete(id);
+
+			//we will use deleteMany({ post: id })
+			if (foundPost.commentHistory.length > 0) {
+				await Comment.deleteMany({ post: id });
+				await foundPost.commentHistory.map((e) => {
+					foundUser.commentHistory.pull(e);
+				});
+			}
 			await foundUser.postHistory.pull(id);
 			await foundUser.save();
-			res
-				.status(200)
-				.json({ message: "post was deleted", payload: deletedPost });
+
+			res.status(200).json({
+				message: "post was deleted",
+				deletePost: deletedPost,
+				deletedInUser: foundUser,
+			});
 		} else {
 			throw { message: "You do not have the permission to delete" };
 		}
