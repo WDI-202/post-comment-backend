@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title><%= title %></title>
-		<link rel="stylesheet" href="/stylesheets/style.css" />
-	</head>
+	<% include ./partials/head %>
 	<body>
-		<h1><%= title %></h1>
-		<p>Welcome to <%= title %></p>
+		<% include ./partials/nav %>
+		<h1>Welcome to show all posts page</h1>
+		<% console.log(posts) %>
+		<br />
+
+		<% if (posts.length > 0) { %> <% posts.forEach(element => { %>
+		<p class="title">Title: <%= element.title %></p>
+		<p class="post">Post: <%= element.post %></p>
+		<p>Author: <%= element.owner.username %></p>
+		<br />
+		<% }) %> <% }else { %>
+		<p>There's no posts yet!</p>
+		<% } %>
 	</body>
 </html>
 

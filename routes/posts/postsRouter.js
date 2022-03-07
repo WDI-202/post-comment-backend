@@ -2,15 +2,15 @@ var express = require("express");
 var router = express.Router();
 const { jwtMiddleware, checkIfEmpty } = require("../utils/index");
 const {
-  createPost,
-  getAllPosts,
-  updatePost,
-  deletePost,
+	createPost,
+	getAllPosts,
+	updatePost,
+	deletePost,
 } = require("./controller/postsController");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
-  res.send("hello from postsRouter");
+	res.send("hello from postsRouter");
 });
 
 router.post("/create-post", jwtMiddleware, checkIfEmpty, createPost);

@@ -37,7 +37,9 @@ const getAllPosts = async (req, res) => {
 			.populate("owner", "username")
 			.populate("commentHistory", "comment");
 
-		res.status(200).json(foundAllPosts);
+		// res.status(200).json(foundAllPosts);
+
+		res.render("index", { posts: foundAllPosts });
 		// render index.ejs page. pass in the foundAllPosts information as posts
 		// IN index.ejs page console.log(posts)
 		// forEach of the posts and display each post's title and post
