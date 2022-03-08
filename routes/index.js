@@ -1,20 +1,41 @@
 var express = require("express");
 var router = express.Router();
-const { getAllPosts } = require("./posts/controller/postsController");
-const { aboutPage, postFormPage } = require("./pages/viewController");
-const array = [
-	{ name: "ginny" },
-	{ name: "michael" },
-	{ name: "chris" },
-	{ name: "victoria" },
-	{ name: "tony" },
+const {
+	getAllPosts
+} = require("./posts/controller/postsController");
+const {
+	aboutPage,
+	postFormPage,
+	loginFormPage,
+	signUpFormPage
+} = require("./pages/viewController");
+const array = [{
+		name: "ginny"
+	},
+	{
+		name: "michael"
+	},
+	{
+		name: "chris"
+	},
+	{
+		name: "victoria"
+	},
+	{
+		name: "tony"
+	},
 ];
 /* GET home page. */
 router.get("/", function (req, res, next) {
-	res.render("home", { title: "Weblog", data: array });
+	res.render("home", {
+		title: "Weblog",
+		data: array
+	});
 });
 router.get("/show-all-post", getAllPosts);
 router.get("/about", aboutPage);
 router.get("/post-form", postFormPage);
+router.get("/login-form", loginFormPage)
+router.get("/signup-form", signUpFormPage)
 
 module.exports = router;
