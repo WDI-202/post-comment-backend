@@ -10,10 +10,14 @@ const loginFormPage = (req, res) => {
 const signUpFormPage = (req, res) => {
 	res.render("sign-up-form")
 }
+const commentFormPage = (req, res) => {
+	res.render('comment-form')
+}
 
 module.exports = {
 	aboutPage,
 	postFormPage,
 	loginFormPage,
-	signUpFormPage
+	signUpFormPage,
+	commentFormPage
 };

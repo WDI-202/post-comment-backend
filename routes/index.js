@@ -7,7 +7,8 @@ const {
 	aboutPage,
 	postFormPage,
 	loginFormPage,
-	signUpFormPage
+	signUpFormPage,
+	commentFormPage
 } = require("./pages/viewController");
 const array = [{
 		name: "ginny"
@@ -37,5 +38,6 @@ router.get("/about", aboutPage);
 router.get("/post-form", postFormPage);
 router.get("/login-form", loginFormPage)
 router.get("/signup-form", signUpFormPage)
+router.get("/comment-form", commentFormPage)
 
 module.exports = router;
