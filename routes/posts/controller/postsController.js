@@ -52,7 +52,7 @@ const getAllPosts = async (req, res) => {
 
 		// res.status(200).json(foundAllPosts);
 
-		res.render("index", {
+		res.render("show-all-posts", {
 			posts: foundAllPosts
 		});
 		// render index.ejs page. pass in the foundAllPosts information as posts
@@ -66,6 +66,31 @@ const getAllPosts = async (req, res) => {
 		});
 	}
 };
+
+const getPostById = async (req, res) => {
+	try {
+		const {
+			postId
+		} = req.params
+
+		const onePost = await Post.findById(postId).populate("commentHistory")
+		//you can also a Comment.find for all comments with postId
+		//Comment.find({ post: postId}).populate("owner", "username")
+		if (!onePost) throw {
+			message: "can't find post"
+		}
+
+		res.status(200).render("show-one-post", {
+			post: onePost
+		})
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			message: error,
+			error: error
+		});
+	}
+}
 
 const updatePost = async (req, res) => {
 	try {
@@ -170,6 +195,7 @@ const deletePost = async (req, res) => {
 module.exports = {
 	createPost,
 	getAllPosts,
+	getPostById,
 	updatePost,
 	deletePost,
 };

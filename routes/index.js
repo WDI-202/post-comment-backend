@@ -1,7 +1,8 @@
 var express = require("express");
 var router = express.Router();
 const {
-	getAllPosts
+	getAllPosts,
+	getPostById
 } = require("./posts/controller/postsController");
 const {
 	aboutPage,
@@ -34,6 +35,7 @@ router.get("/", function (req, res, next) {
 	});
 });
 router.get("/show-all-post", getAllPosts);
+router.get("/get-one-post-by-id/:postId", getPostById)
 router.get("/about", aboutPage);
 router.get("/post-form", postFormPage);
 router.get("/login-form", loginFormPage)

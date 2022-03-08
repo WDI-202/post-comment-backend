@@ -1,0 +1,14 @@
+<% include ./partials/head %>
+    <% include ./partials/nav %>
+        <p>Hello from show one</p>
+        <h1>
+            <%= post.title %>
+        </h1>
+        <p>
+            <%= post.post %>
+        </p>
+        <% post.commentHistory.forEach(element=> { %>
+            <p>
+                <%= element.comment %>
+            </p>
+            <% }) %>
