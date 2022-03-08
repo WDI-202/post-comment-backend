@@ -1,16 +1,23 @@
 const Post = require("../model/Post");
 const User = require("../../users/model/User");
 const Comment = require("../../comments/model/Comment");
-const { errorHandler } = require("../../utils/index");
+const {
+	errorHandler
+} = require("../../utils/index");
 
 const createPost = async (req, res) => {
 	try {
 		// i need the current user and its id to save
 		// i need my req.body
 		const decodedUser = res.locals.decodedToken;
-		const foundUser = await User.findOne({ email: decodedUser.email });
+		const foundUser = await User.findOne({
+			email: decodedUser.email
+		});
 
-		const { title, post } = req.body;
+		const {
+			title,
+			post
+		} = req.body;
 
 		const newPost = new Post({
 			title: title,
@@ -25,9 +32,15 @@ const createPost = async (req, res) => {
 
 		res
 			.status(200)
-			.json({ message: "post has been saved", payload: savedPost });
+			.json({
+				message: "post has been saved",
+				payload: savedPost
+			});
 	} catch (error) {
-		res.status(500).json({ message: error, error: errorHandler(error) });
+		res.status(500).json({
+			message: error,
+			error: errorHandler(error)
+		});
 	}
 };
 
@@ -39,22 +52,31 @@ const getAllPosts = async (req, res) => {
 
 		// res.status(200).json(foundAllPosts);
 
-		res.render("index", { posts: foundAllPosts });
+		res.render("index", {
+			posts: foundAllPosts
+		});
 		// render index.ejs page. pass in the foundAllPosts information as posts
 		// IN index.ejs page console.log(posts)
 		// forEach of the posts and display each post's title and post
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({ message: error, error: error });
+		res.status(500).json({
+			message: error,
+			error: error
+		});
 	}
 };
 
 const updatePost = async (req, res) => {
 	try {
-		const { postId } = req.params;
+		const {
+			postId
+		} = req.params;
 
 		const decodedUser = res.locals.decodedToken;
-		const foundUser = await User.findOne({ email: decodedUser.email });
+		const foundUser = await User.findOne({
+			email: decodedUser.email
+		});
 
 		const foundPost = await Post.findById(postId);
 
@@ -62,41 +84,64 @@ const updatePost = async (req, res) => {
 			const updatedPost = await Post.findByIdAndUpdate(postId, req.body, {
 				new: true,
 			});
-			res.status(200).json({ message: "updated Post", payload: updatedPost });
+			res.status(200).json({
+				message: "updated Post",
+				payload: updatedPost
+			});
 		} else {
-			throw { message: "You are not authorized" };
+			throw {
+				message: "You are not authorized"
+			};
 		}
 	} catch (error) {
-		res.status(500).json({ message: error, error: errorHandler(error) });
+		res.status(500).json({
+			message: error,
+			error: errorHandler(error)
+		});
 	}
 };
 
 const deletePost = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const {
+			id
+		} = req.params;
 
 		const decodedUser = res.locals.decodedToken;
-		const foundUser = await User.findOne({ email: decodedUser.email });
+		const foundUser = await User.findOne({
+			email: decodedUser.email
+		});
 		const foundPost = await Post.findById(id);
+		if (!foundPost) throw {
+			message: "Post not found"
+		}
+
 
 		if (foundUser._id.toString() === foundPost.owner.toString()) {
-			const deletedPost = await Post.findByIdAndDelete(id);
 
 			//we will use deleteMany({ post: id })
 			//find other comments based on user
 			//looks for those comments, find the users of those comments
 			//delete based on id
 			if (foundPost.commentHistory.length > 0) {
-				const foundComments = await Comment.find({ post: id });
-				await foundComments.map(async (comment) => {
+				const foundComments = await Comment.find({
+					post: id
+				});
+				if (!foundComments) throw {
+					message: "Post not found"
+				}
+
+				await foundComments.forEach(async (comment) => {
 					console.log(comment);
 					let commentUser = await User.findById(comment.owner);
 					await commentUser.commentHistory.pull(comment._id.toString());
 					await commentUser.save();
 				});
-				await Comment.deleteMany({ post: id });
-				await Comment.save();
+				await Comment.deleteMany({
+					post: id
+				});
 			}
+			const deletedPost = await Post.findByIdAndDelete(id);
 			await foundUser.postHistory.pull(id);
 			await foundUser.save();
 
@@ -106,14 +151,19 @@ const deletePost = async (req, res) => {
 				deletedInUser: foundUser,
 			});
 		} else {
-			throw { message: "You do not have the permission to delete" };
+			throw {
+				message: "You do not have the permission to delete"
+			};
 		}
 		//delete post
 		//delete post id from user postHistory
 		//check if there are comments under this post, and delete those comments if its there
 	} catch (error) {
 		console.log(error);
-		res.status(500).json({ message: "error", error: error });
+		res.status(500).json({
+			message: "error",
+			error: error
+		});
 	}
 };
 

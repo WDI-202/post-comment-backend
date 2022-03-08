@@ -1,7 +1,9 @@
 const Comment = require("../model/Comment");
 const User = require("../../users/model/User");
 const Post = require("../../posts/model/Post");
-const { errorHandler } = require("../../utils/index");
+const {
+	errorHandler
+} = require("../../utils/index");
 
 const getComment = async (req, res) => {
 	try {
@@ -13,12 +15,21 @@ const getComment = async (req, res) => {
 };
 const createComment = async (req, res) => {
 	try {
-		const { postId } = req.params;
-		const { comment } = req.body;
+		const {
+			postId
+		} = req.params;
+		const {
+			comment
+		} = req.body;
 		const decodedToken = res.locals.decodedToken;
-		console.log(decodedToken);
+		let foundPost = await Post.findById(postId);
+		if (!foundPost) throw {
+			message: "Post not found"
+		}
 
-		let foundUser = await User.findOne({ email: decodedToken.email });
+		let foundUser = await User.findOne({
+			email: decodedToken.email
+		});
 
 		const newComment = new Comment({
 			comment: comment,
@@ -31,40 +42,59 @@ const createComment = async (req, res) => {
 		foundUser.commentHistory.push(savedComment.id);
 		await foundUser.save();
 
-		let foundPost = await Post.findById(postId);
+
 		foundPost.commentHistory.push(savedComment.id);
 		await foundPost.save();
 
-		res.status(200).json({ message: "saved comment", payload: savedComment });
+		res.status(200).json({
+			message: "saved comment",
+			payload: savedComment
+		});
 	} catch (error) {
-		res.status(500).json({ message: "error", error: error });
+		res.status(500).json({
+			message: "error",
+			error: error
+		});
 	}
 };
 
 const updateComment = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const {
+			id
+		} = req.params;
 		let foundComment = await Comment.findById(id);
 		console.log(foundComment);
 
 		//You also need to check if you are the owner of the comment!
 		const decodedToken = res.locals.decodedToken;
 
-		let foundUser = await User.findOne({ email: decodedToken.email });
+		let foundUser = await User.findOne({
+			email: decodedToken.email
+		});
 
 		if (foundComment.owner.toString() === foundUser._id.toString()) {
 			let updatedComment = await Comment.findByIdAndUpdate(id, req.body, {
 				new: true,
 			});
 
-			res.json({ message: "success", payload: updatedComment });
+			res.json({
+				message: "success",
+				payload: updatedComment
+			});
 		} else {
 			res
 				.status(500)
-				.json({ message: "error", error: "You don't have permission" });
+				.json({
+					message: "error",
+					error: "You don't have permission"
+				});
 		}
 	} catch (e) {
-		res.status(500).json({ message: "error", error: errorHandler(e) });
+		res.status(500).json({
+			message: "error",
+			error: errorHandler(e)
+		});
 	}
 };
 
@@ -80,16 +110,26 @@ const deleteComment = async (req, res) => {
 			await foundPost.save();
 
 			const decodedData = res.locals.decodedToken;
-			let foundUser = await User.findOne({ email: decodedData.email });
+			let foundUser = await User.findOne({
+				email: decodedData.email
+			});
 			await foundUser.commentHistory.pull(req.params.id);
 			await foundUser.save();
 
-			res.json({ message: "success", payload: deletedComment });
+			res.json({
+				message: "success",
+				payload: deletedComment
+			});
 		} else {
-			throw { message: "you do not have permission" };
+			throw {
+				message: "you do not have permission"
+			};
 		}
 	} catch (e) {
-		res.status(500).json({ message: "error", error: errorHandler(e) });
+		res.status(500).json({
+			message: "error",
+			error: errorHandler(e)
+		});
 	}
 };
 
