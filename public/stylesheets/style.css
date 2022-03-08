@@ -19,3 +19,66 @@ nav ul {
 nav ul li a {
 	text-decoration: none;
 }
+
+.deck-tile {
+	display: flex;
+	flex-direction: column;
+	width: 17%;
+	margin: 1% 2%;
+	position: relative;
+}
+
+.card-body {
+	padding: 0%;
+	background-color: white;
+	box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+	border-radius: 10px;
+}
+
+.card-title {
+	padding: 5% 5% 0% 5%;
+	height: auto;
+	width: 100%;
+	font-family: "Roboto", sans-serif;
+	margin-bottom: 0%;
+	font-size: 1.5rem;
+	letter-spacing: 0.5px;
+	color: #333;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	white-space: pre-line;
+}
+
+.card-text {
+	padding: 0% 5%;
+	height: 85px;
+	display: -webkit-box;
+	-webkit-line-clamp: 5;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	white-space: pre-line;
+	margin: 0em 0.6em 1em 0.6em;
+}
+
+.author {
+	padding: 2%;
+	border-top: 1px solid grey;
+}
+.date {
+	font-family: "Roboto", sans-serif;
+	padding: 1% 5%;
+	color: grey;
+	margin: auto;
+}
+
+.comment-length {
+	position: absolute;
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	/* outline: #efefef; */
+	left: 80%;
+	bottom: 10%;
+}

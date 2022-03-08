@@ -1,24 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<% include ./partials/head %>
 	<body>
 		<% include ./partials/nav %>
-		<h1>Welcome to show all posts page</h1>
-		<% console.log(posts) %>
-		<br />
-
-		<% if (posts.length > 0) { %> <% posts.forEach(element => { %>
-		<p class="title">Title: <%= element.title %></p>
-		<p class="post">Post: <%= element.post %></p>
-		<p>Author: <%= element.owner.username %></p>
-		<br />
-		<% element.commentHistory.forEach(comment => { %>
-		<p><%= comment.comment %></p>
-		<% }) %> <% }) %> <% }else { %>
-		<p>There's no posts yet!</p>
-		<% } %>
+		<div class="card-deck">
+			<% if (posts.length > 0) { %> <% posts.forEach(data => { %>
+			<div class="deck-tile">
+				<div class="card-body">
+					<h5 class="card-title"><%= data.title %></h5>
+					<p class="date">
+						<% let date = data.createdAt.toString().substring(0, 15)%> <%= date
+						%>
+					</p>
+					<p class="card-text">
+						<br />
+						<%= data.post %>
+					</p>
+					<button class="comment-length">
+						<%= data.commentHistory.length %>
+					</button>
+					<br />
+					<p class="author">Author: <%= data.owner.username %></p>
+				</div>
+			</div>
+			<% }) %> <% }else { %>
+			<p>There's no posts yet!</p>
+			<% } %>
+		</div>
+		<% include ./partials/script %>
 	</body>
 </html>
-
-<!--IN index.ejs page console.log(posts)
-forEach for the posts and display each post's title and post -->
