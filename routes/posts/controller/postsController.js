@@ -72,7 +72,6 @@ const updatePost = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-	//6223b9e3f6bdeb39256340f5
 	try {
 		const { id } = req.params;
 
@@ -84,11 +83,19 @@ const deletePost = async (req, res) => {
 			const deletedPost = await Post.findByIdAndDelete(id);
 
 			//we will use deleteMany({ post: id })
+			//find other comments based on user
+			//looks for those comments, find the users of those comments
+			//delete based on id
 			if (foundPost.commentHistory.length > 0) {
-				await Comment.deleteMany({ post: id });
-				await foundPost.commentHistory.map((e) => {
-					foundUser.commentHistory.pull(e);
+				const foundComments = await Comment.find({ post: id });
+				await foundComments.map(async (comment) => {
+					console.log(comment);
+					let commentUser = await User.findById(comment.owner);
+					await commentUser.commentHistory.pull(comment._id.toString());
+					await commentUser.save();
 				});
+				await Comment.deleteMany({ post: id });
+				await Comment.save();
 			}
 			await foundUser.postHistory.pull(id);
 			await foundUser.save();
@@ -105,6 +112,7 @@ const deletePost = async (req, res) => {
 		//delete post id from user postHistory
 		//check if there are comments under this post, and delete those comments if its there
 	} catch (error) {
+		console.log(error);
 		res.status(500).json({ message: "error", error: error });
 	}
 };

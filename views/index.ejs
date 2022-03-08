@@ -12,7 +12,9 @@
 		<p class="post">Post: <%= element.post %></p>
 		<p>Author: <%= element.owner.username %></p>
 		<br />
-		<% }) %> <% }else { %>
+		<% element.commentHistory.forEach(comment => { %>
+		<p><%= comment.comment %></p>
+		<% }) %> <% }) %> <% }else { %>
 		<p>There's no posts yet!</p>
 		<% } %>
 	</body>
